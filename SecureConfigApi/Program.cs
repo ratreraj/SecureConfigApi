@@ -5,8 +5,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddAuthentication("Bearer")
-    .AddMicrosoftIdentityWebApi(builder.Configuration);
-builder.Services.AddAuthentication();
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ConfigReadPolicy", policy =>
+        policy.RequireRole("Config.Read"));
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
